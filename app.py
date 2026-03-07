@@ -7,11 +7,11 @@ st.set_page_config(page_title="Heart Disease Predictor")
 st.title("🏥 Heart Disease Prediction App")
 st.write("Enter patient information below to check heart disease risk")
 
-# Load trained model
+Load model
 
 model = joblib.load("logistic_regression_model.pkl")
 
-# ---- USER INPUTS ----
+-------- USER INPUT --------
 
 age = st.number_input("Age", 20, 100, 45)
 
@@ -24,10 +24,10 @@ cp_option = st.selectbox(
 )
 
 cp_map = {
-"Typical Angina":0,
-"Atypical Angina":1,
-"Non-anginal Pain":2,
-"Asymptomatic":3
+"Typical Angina": 0,
+"Atypical Angina": 1,
+"Non-anginal Pain": 2,
+"Asymptomatic": 3
 }
 
 cp = cp_map[cp_option]
@@ -49,20 +49,16 @@ restecg_option = st.selectbox(
 )
 
 restecg_map = {
-"Normal":0,
-"ST-T wave abnormality":1,
-"Left ventricular hypertrophy":2
+"Normal": 0,
+"ST-T wave abnormality": 1,
+"Left ventricular hypertrophy": 2
 }
 
 restecg = restecg_map[restecg_option]
 
 thalach = st.number_input("Maximum Heart Rate", 70, 210, 150)
 
-exang_option = st.selectbox(
-"Exercise Induced Angina",
-["No", "Yes"]
-)
-
+exang_option = st.selectbox("Exercise Induced Angina", ["No", "Yes"])
 exang = 1 if exang_option == "Yes" else 0
 
 oldpeak = st.number_input("Oldpeak", 0.0, 6.0, 1.0)
@@ -73,9 +69,9 @@ slope_option = st.selectbox(
 )
 
 slope_map = {
-"Upsloping":0,
-"Flat":1,
-"Downsloping":2
+"Upsloping": 0,
+"Flat": 1,
+"Downsloping": 2
 }
 
 slope = slope_map[slope_option]
@@ -88,19 +84,21 @@ thal_option = st.selectbox(
 )
 
 thal_map = {
-"Normal":1,
-"Fixed Defect":2,
-"Reversible Defect":3
+"Normal": 1,
+"Fixed Defect": 2,
+"Reversible Defect": 3
 }
 
 thal = thal_map[thal_option]
 
-# ---- PREDICTION ----
+-------- PREDICTION --------
 
 if st.button("Predict Heart Disease Risk"):
 
-input_data = pd.Data([[age,sex,cp,trestbps,chol,fbs,restecg,thalach,exang,oldpeak,slope,ca,thal]],
-                          columns=["age","sex","cp","trestbps","chol","fbs","restecg","thalach","exang","oldpeak","slope","ca","thal"])
+input_data = pd.DataFrame(
+    [[age,sex,cp,trestbps,chol,fbs,restecg,thalach,exang,oldpeak,slope,ca,thal]],
+    columns=["age","sex","cp","trestbps","chol","fbs","restecg","thalach","exang","oldpeak","slope","ca","thal"]
+)
 
 prediction = model.predict(input_data)[0]
 probability = model.predict_proba(input_data)[0]
@@ -111,5 +109,3 @@ else:
     st.success("✅ Low Risk of Heart Disease")
 
 st.write("Prediction Confidence:", round(max(probability)*100,2), "%")
-
-
