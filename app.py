@@ -19,7 +19,7 @@ def load_model():
 # Load the dataset to get feature names
 @st.cache_resource
 def load_data():
-    df = pd.read_csv("C:\\Users\\yadav\\Downloads\\dataset.csv")
+    df = pd.read_csv("dataset.csv")
     return df
 
 try:
@@ -118,5 +118,6 @@ except FileNotFoundError as e:
 except Exception as e:
     st.error(f"❌ An error occurred: {e}")
     st.info("Please check your inputs and try again.")
+
 
 
