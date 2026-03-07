@@ -2,11 +2,13 @@ import streamlit as st
 import joblib
 import pandas as pd
 
-# Page config
+# Page configuration
 
 st.set_page_config(page_title="Heart Disease Predictor", layout="wide")
 
-st.title(" Heart Disease Prediction App")
+# Title
+
+st.title("🏥 Heart Disease Prediction App")
 st.markdown("Provide patient details below to predict heart disease risk.")
 st.markdown("---")
 
@@ -18,7 +20,11 @@ return joblib.load("logistic_regression_model.pkl")
 
 model = load_model()
 
+# Sidebar
+
 st.sidebar.header("📋 Patient Information")
+
+# Store inputs
 
 user_input = {}
 
@@ -146,9 +152,9 @@ user_input["thal"] = thal_map[thal]
 
 st.markdown("---")
 
-# ---------------- PREDICTION ----------------
+# Prediction button
 
-if st.button("Predict Heart Disease Risk", use_container_width=True):
+if st.button("🔍 Predict Heart Disease Risk", use_container_width=True):
 
 ```
 input_df = pd.DataFrame([user_input])
@@ -156,15 +162,15 @@ input_df = pd.DataFrame([user_input])
 prediction = model.predict(input_df)[0]
 prediction_proba = model.predict_proba(input_df)[0]
 
-st.subheader(" Prediction Result")
+st.subheader("📊 Prediction Result")
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
     if prediction == 1:
-        st.error(" HIGH RISK of Heart Disease")
+        st.error("⚠️ HIGH RISK of Heart Disease")
     else:
-        st.success(" LOW RISK of Heart Disease")
+        st.success("✅ LOW RISK of Heart Disease")
 
 with col2:
     st.metric("Prediction Confidence", f"{max(prediction_proba)*100:.2f}%")
@@ -174,7 +180,7 @@ with col3:
 
 st.markdown("---")
 
-st.subheader(" Probability Breakdown")
+st.subheader("📈 Probability Breakdown")
 
 prob_df = pd.DataFrame({
     "Class": ["No Disease", "Disease"],
@@ -183,6 +189,6 @@ prob_df = pd.DataFrame({
 
 st.bar_chart(prob_df.set_index("Class"))
 
-st.subheader(" Patient Input Summary")
+st.subheader("📝 Patient Input Summary")
 st.dataframe(input_df.T)
 ```
