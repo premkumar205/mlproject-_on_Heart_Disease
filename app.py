@@ -7,10 +7,11 @@ st.set_page_config(page_title="Heart Disease Predictor")
 st.title("🏥 Heart Disease Prediction App")
 st.write("Enter patient information below to check heart disease risk")
 
-#Load model
+# Load model
+
 model = joblib.load("logistic_regression_model.pkl")
 
--------- USER INPUT --------
+# -------- USER INPUT --------
 
 age = st.number_input("Age", 20, 100, 45)
 
@@ -75,7 +76,7 @@ slope_map = {
 
 slope = slope_map[slope_option]
 
-ca = st.selectbox("Number of Major Vessels", [0,1,2,3])
+ca = st.selectbox("Number of Major Vessels", [0, 1, 2, 3])
 
 thal_option = st.selectbox(
 "Thalassemia",
@@ -90,13 +91,28 @@ thal_map = {
 
 thal = thal_map[thal_option]
 
--------- PREDICTION --------
+# -------- PREDICTION --------
 
 if st.button("Predict Heart Disease Risk"):
 
+```
 input_data = pd.DataFrame(
-    [[age,sex,cp,trestbps,chol,fbs,restecg,thalach,exang,oldpeak,slope,ca,thal]],
-    columns=["age","sex","cp","trestbps","chol","fbs","restecg","thalach","exang","oldpeak","slope","ca","thal"]
+    [[age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]],
+    columns=[
+        "age",
+        "sex",
+        "cp",
+        "trestbps",
+        "chol",
+        "fbs",
+        "restecg",
+        "thalach",
+        "exang",
+        "oldpeak",
+        "slope",
+        "ca",
+        "thal"
+    ]
 )
 
 prediction = model.predict(input_data)[0]
@@ -107,5 +123,4 @@ if prediction == 1:
 else:
     st.success("✅ Low Risk of Heart Disease")
 
-st.write("Prediction Confidence:", round(max(probability)*100,2), "%")
-
+st.write("Prediction Confidence:", round(max(probability) * 100, 2), "%")
