@@ -94,8 +94,6 @@ thal = thal_map[thal_option]
 # -------- PREDICTION --------
 
 if st.button("Predict Heart Disease Risk"):
-
-```
 input_data = pd.DataFrame(
     [[age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]],
     columns=[
@@ -124,3 +122,4 @@ else:
     st.success("✅ Low Risk of Heart Disease")
 
 st.write("Prediction Confidence:", round(max(probability) * 100, 2), "%")
+
