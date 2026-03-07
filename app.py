@@ -7,8 +7,7 @@ st.set_page_config(page_title="Heart Disease Predictor")
 st.title("🏥 Heart Disease Prediction App")
 st.write("Enter patient information below to check heart disease risk")
 
-Load model
-
+#Load model
 model = joblib.load("logistic_regression_model.pkl")
 
 -------- USER INPUT --------
@@ -109,3 +108,4 @@ else:
     st.success("✅ Low Risk of Heart Disease")
 
 st.write("Prediction Confidence:", round(max(probability)*100,2), "%")
+
