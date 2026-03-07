@@ -13,7 +13,7 @@ st.markdown("---")
 # Load the trained model
 @st.cache_resource
 def load_model():
-    model = joblib.load("C:\\Users\\yadav\\OneDrive\\Desktop\\logistric regression\\logistic_regression model.pkl")
+    model = joblib.load("model = joblib.load("logistic_regression_model.pkl")")
     return model
 
 # Load the dataset to get feature names
@@ -118,3 +118,4 @@ except FileNotFoundError as e:
 except Exception as e:
     st.error(f"❌ An error occurred: {e}")
     st.info("Please check your inputs and try again.")
+
