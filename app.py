@@ -1,124 +1,83 @@
 import streamlit as st
 import joblib
 import pandas as pd
-import numpy as np
 
-# Set page configuration
+# Page config
 st.set_page_config(page_title="Heart Disease Predictor", layout="wide")
 
-# Title
 st.title("🏥 Heart Disease Prediction App")
 st.markdown("---")
 
-# Load the trained model
+# Load model
 @st.cache_resource
 def load_model():
-    model = joblib.load("logistic_regression_model.pkl")
-    return model
+    return joblib.load("logistic_regression_model.pkl")
 
-# Load the dataset to get feature names
-@st.cache_resource
-def load_data():
-    df = pd.read_csv("heart.csv")
-    return df
+model = load_model()
 
-try:
-    model = load_model()
-    df = load_data()
-    
-    # Get feature names (excluding target and age_group)
-    feature_names = [col for col in df.columns if col not in ['target', 'age_group']]
-    
-    st.sidebar.header("📋 Patient Information")
-    
-    # Create input fields for each feature
-    user_input = {}
-    
-    col1, col2 = st.columns(2)
-    
+# Feature names (same order used during training)
+feature_names = [
+    "age","sex","cp","trestbps","chol","fbs","restecg",
+    "thalach","exang","oldpeak","slope","ca","thal"
+]
+
+st.sidebar.header("📋 Patient Information")
+
+user_input = {}
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("Demographic & Health Metrics")
+
+    user_input["age"] = st.number_input("Age", 20, 100, 50)
+    user_input["sex"] = st.selectbox("Sex", [0,1])
+    user_input["cp"] = st.selectbox("Chest Pain Type", [0,1,2,3])
+    user_input["trestbps"] = st.number_input("Resting Blood Pressure", 80,200,120)
+    user_input["chol"] = st.number_input("Cholesterol",100,400,200)
+    user_input["fbs"] = st.selectbox("Fasting Blood Sugar", [0,1])
+    user_input["restecg"] = st.selectbox("Rest ECG", [0,1,2])
+
+with col2:
+    st.subheader("Additional Metrics")
+
+    user_input["thalach"] = st.number_input("Max Heart Rate",70,210,150)
+    user_input["exang"] = st.selectbox("Exercise Induced Angina", [0,1])
+    user_input["oldpeak"] = st.number_input("Oldpeak",0.0,6.0,1.0)
+    user_input["slope"] = st.selectbox("Slope", [0,1,2])
+    user_input["ca"] = st.selectbox("CA", [0,1,2,3,4])
+    user_input["thal"] = st.selectbox("Thal", [0,1,2,3])
+
+st.markdown("---")
+
+if st.button("🔍 Predict", use_container_width=True):
+
+    input_df = pd.DataFrame([user_input])
+
+    prediction = model.predict(input_df)[0]
+    prediction_proba = model.predict_proba(input_df)[0]
+
+    st.subheader("📊 Prediction Result")
+
+    col1,col2,col3 = st.columns(3)
+
     with col1:
-        st.subheader("Demographic & Health Metrics")
-        for i, feature in enumerate(feature_names[:len(feature_names)//2]):
-            if feature in df.columns:
-                min_val = float(df[feature].min())
-                max_val = float(df[feature].max())
-                mean_val = float(df[feature].mean())
-                
-                user_input[feature] = st.number_input(
-                    f"{feature}",
-                    min_value=min_val,
-                    max_value=max_val,
-                    value=mean_val,
-                    step=0.1
-                )
-    
+        if prediction == 1:
+            st.error("⚠️ HIGH RISK")
+        else:
+            st.success("✅ LOW RISK")
+
     with col2:
-        st.subheader("Additional Metrics")
-        for i, feature in enumerate(feature_names[len(feature_names)//2:]):
-            if feature in df.columns:
-                min_val = float(df[feature].min())
-                max_val = float(df[feature].max())
-                mean_val = float(df[feature].mean())
-                
-                user_input[feature] = st.number_input(
-                    f"{feature}",
-                    min_value=min_val,
-                    max_value=max_val,
-                    value=mean_val,
-                    step=0.1
-                )
-    
-    st.markdown("---")
-    
-    # Predict button
-    if st.button("🔍 Predict", use_container_width=True):
-        # Prepare input data
-        input_data = pd.DataFrame([user_input])
-        
-        # Make prediction
-        prediction = model.predict(input_data)[0]
-        prediction_proba = model.predict_proba(input_data)[0]
-        
-        st.markdown("---")
-        st.subheader("📊 Prediction Results")
-        
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            if prediction == 1:
-                st.error("⚠️ HIGH RISK")
-                st.metric("Risk Level", "High")
-            else:
-                st.success("✅ LOW RISK")
-                st.metric("Risk Level", "Low")
-        
-        with col2:
-            st.metric("Confidence", f"{max(prediction_proba)*100:.2f}%")
-        
-        with col3:
-            st.metric("Prediction Class", f"Class {prediction}")
-        
-        st.markdown("---")
-        
-        # Show probability breakdown
-        st.subheader("📈 Probability Breakdown")
-        prob_df = pd.DataFrame({
-            'Class': ['No Disease (0)', 'Disease (1)'],
-            'Probability': prediction_proba
-        })
-        st.bar_chart(prob_df.set_index('Class'))
-        
-        # Show input summary
-        st.subheader("📝 Patient Input Summary")
-        st.dataframe(input_data.T, use_container_width=True)
+        st.metric("Confidence", f"{max(prediction_proba)*100:.2f}%")
 
-except FileNotFoundError as e:
-    st.error(f"❌ Error: {e}")
-    st.info("Make sure the model file is saved at: C:\\Users\\Sumit\\Downloads\\final_logistic_regression_model.pkl")
-except Exception as e:
-    st.error(f"❌ An error occurred: {e}")
-    st.info("Please check your inputs and try again.")
+    with col3:
+        st.metric("Prediction Class", prediction)
 
+    st.subheader("📈 Probability Breakdown")
 
+    prob_df = pd.DataFrame({
+        "Class":["No Disease","Disease"],
+        "Probability":prediction_proba
+    })
 
-
+    st.bar_chart(prob_df.set_index("Class"))
