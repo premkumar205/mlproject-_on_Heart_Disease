@@ -6,31 +6,19 @@ import pandas as pd
 
 st.set_page_config(page_title="Heart Disease Predictor", layout="wide")
 
-# Title
-
 st.title("🏥 Heart Disease Prediction App")
 st.markdown("Provide patient details below to predict heart disease risk.")
 st.markdown("---")
 
-# Load trained model
+# Load model
 
-@st.cache_resource
-def load_model():
-return joblib.load("logistic_regression_model.pkl")
-
-model = load_model()
-
-# Sidebar
-
-st.sidebar.header("📋 Patient Information")
-
-# Store inputs
+model = joblib.load("logistic_regression_model.pkl")
 
 user_input = {}
 
 col1, col2 = st.columns(2)
 
-# ---------------- LEFT COLUMN ----------------
+# LEFT SIDE
 
 with col1:
 st.subheader("Demographic & Basic Health")
@@ -95,7 +83,7 @@ restecg_map = {
 user_input["restecg"] = restecg_map[restecg]
 ```
 
-# ---------------- RIGHT COLUMN ----------------
+# RIGHT SIDE
 
 with col2:
 st.subheader("Additional Health Metrics")
@@ -152,9 +140,9 @@ user_input["thal"] = thal_map[thal]
 
 st.markdown("---")
 
-# Prediction button
+# Prediction
 
-if st.button("🔍 Predict Heart Disease Risk", use_container_width=True):
+if st.button("🔍 Predict Heart Disease Risk"):
 
 ```
 input_df = pd.DataFrame([user_input])
@@ -164,29 +152,19 @@ prediction_proba = model.predict_proba(input_df)[0]
 
 st.subheader("📊 Prediction Result")
 
-col1, col2, col3 = st.columns(3)
+if prediction == 1:
+    st.error("⚠️ HIGH RISK of Heart Disease")
+else:
+    st.success("✅ LOW RISK of Heart Disease")
 
-with col1:
-    if prediction == 1:
-        st.error("⚠️ HIGH RISK of Heart Disease")
-    else:
-        st.success("✅ LOW RISK of Heart Disease")
-
-with col2:
-    st.metric("Prediction Confidence", f"{max(prediction_proba)*100:.2f}%")
-
-with col3:
-    st.metric("Predicted Class", prediction)
-
-st.markdown("---")
-
-st.subheader("📈 Probability Breakdown")
+st.metric("Confidence", f"{max(prediction_proba)*100:.2f}%")
 
 prob_df = pd.DataFrame({
     "Class": ["No Disease", "Disease"],
     "Probability": prediction_proba
 })
 
+st.subheader("📈 Probability Breakdown")
 st.bar_chart(prob_df.set_index("Class"))
 
 st.subheader("📝 Patient Input Summary")
