@@ -1,7 +1,7 @@
 # ❤️ Heart Disease Prediction using Machine Learning
 ## live link: https://mlprojectheart.streamlit.app/
 
-## 📌 Project Overview
+##  Project Overview
 Heart disease is one of the leading causes of death worldwide. Early prediction can help doctors take preventive actions and improve patient outcomes.
 
 This project uses Machine Learning algorithms to predict whether a person is likely to have heart disease based on several medical attributes such as age, cholesterol level, blood pressure, and chest pain type.
