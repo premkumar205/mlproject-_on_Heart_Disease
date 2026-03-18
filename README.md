@@ -11,10 +11,8 @@ The model is trained on a Heart Disease dataset and classifies patients into:
 - 1 → Heart Disease
 
 ---
-
-## 🎯 Objective
+##  Objective
 The objective of this project is to build a machine learning model that predicts the risk of heart disease using medical data.
-
 Goals:
 - Analyze medical data
 - Train a classification model
@@ -22,11 +20,8 @@ Goals:
 - Identify important health features affecting heart disease
 
 ---
-
-## 📊 Dataset
-
+##  Dataset
 The dataset contains medical information about patients.
-
 Features included:
 
 | Feature | Description |
@@ -48,7 +43,7 @@ Features included:
 
 ---
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 - Python
 - Pandas
@@ -59,8 +54,7 @@ Features included:
 - Jupyter Notebook
 
 ---
-
-## ⚙️ Machine Learning Workflow
+##  Machine Learning Workflow
 
 1. **Data Collection**
    - Load the heart disease dataset.
